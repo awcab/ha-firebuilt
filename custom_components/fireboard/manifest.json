@@ -1,7 +1,7 @@
 {
   "domain": "fireboard",
   "name": "Fireboard",
-  "version": "0.2.0",
+  "version": "0.2.1",
   "documentation": "https://github.com/awcab/ha-firebuilt",
   "issue_tracker": "https://github.com/awcab/ha-firebuilt/issues",
   "codeowners": ["@awcab"],
