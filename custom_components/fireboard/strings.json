@@ -1,0 +1,47 @@
+{
+  "config": {
+    "step": {
+      "user": {
+        "title": "Connect to Fireboard",
+        "description": "Enter the username and password you use at fireboard.io. Your password is exchanged for an API token and is not stored.",
+        "data": {
+          "username": "Username or email",
+          "password": "Password"
+        }
+      },
+      "reauth_confirm": {
+        "title": "Re-authenticate Fireboard",
+        "description": "The Fireboard token for {username} is no longer valid. Re-enter your password to refresh it.",
+        "data": {
+          "password": "Password"
+        }
+      }
+    },
+    "error": {
+      "invalid_auth": "Invalid username or password",
+      "cannot_connect": "Could not reach the Fireboard API",
+      "unknown": "Unexpected error"
+    },
+    "abort": {
+      "already_configured": "This Fireboard account is already configured",
+      "reauth_successful": "Re-authentication successful"
+    }
+  },
+  "entity": {
+    "sensor": {
+      "battery": { "name": "Battery" },
+      "last_seen": { "name": "Last seen" },
+      "setpoint": { "name": "Setpoint" },
+      "drive_output": { "name": "Drive output" },
+      "drive_battery": { "name": "Drive battery" },
+      "cook_started": { "name": "Cook started" },
+      "cook_session": { "name": "Cook session" }
+    },
+    "binary_sensor": {
+      "alert": { "name": "Alert" }
+    },
+    "number": {
+      "setpoint_target": { "name": "Setpoint target" }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+scripts/.creds
+scripts/devices_sample.redacted.json
+.venv/
+.idea/
+.vscode/
+.claude/

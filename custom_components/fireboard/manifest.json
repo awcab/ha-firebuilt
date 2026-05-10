@@ -1,0 +1,13 @@
+{
+  "domain": "fireboard",
+  "name": "Fireboard",
+  "version": "0.2.0",
+  "documentation": "https://github.com/awcab/ha-firebuilt",
+  "issue_tracker": "https://github.com/awcab/ha-firebuilt/issues",
+  "codeowners": ["@awcab"],
+  "config_flow": true,
+  "dependencies": ["http", "frontend"],
+  "iot_class": "cloud_polling",
+  "integration_type": "hub",
+  "requirements": []
+}

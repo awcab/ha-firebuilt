@@ -1,0 +1,99 @@
+# Fireboard dashboard quickstart.
+#
+# Drop this into a new dashboard view (Settings -> Dashboards -> Edit dashboard
+# -> Raw configuration editor). Replace the example device IDs / entity IDs
+# with your own — find them in Settings -> Devices & Services -> click your
+# Fireboard.
+
+title: Fireboard
+icon: mdi:thermometer-lines
+path: fireboard
+type: sections
+max_columns: 3
+sections:
+
+  # --- Section 1: the all-in-one custom card -----------------------------
+  # Auto-discovers every Fireboard device on the account.
+  - type: grid
+    cards:
+      - type: custom:fireboard-card
+
+  # --- Section 2: a single device, hand-picked entities ------------------
+  - type: grid
+    cards:
+      - type: custom:fireboard-card
+        title: Smoker
+        entities:
+          - sensor.smokey_channel_3
+          # add more probe sensors here
+
+  # --- Section 3: a vertical stack of standard HA cards ------------------
+  # If you don't want the custom card, the integration's entities work in
+  # any built-in card too.
+  - type: grid
+    cards:
+      - type: vertical-stack
+        cards:
+
+          - type: gauge
+            name: Pit temp
+            entity: sensor.smokey_channel_3
+            min: 0
+            max: 500
+            severity:
+              green: 200
+              yellow: 350
+              red: 450
+
+          - type: entities
+            title: Cook
+            entities:
+              - entity: sensor.smokey_cook_session
+                name: Session
+              - entity: sensor.smokey_cook_started
+                name: Started
+              - entity: sensor.smokey_setpoint
+                name: Setpoint
+              - entity: sensor.smokey_drive_output
+                name: Fan
+              - entity: sensor.smokey_battery
+                name: Battery
+              - entity: binary_sensor.smokey_channel_3_alert
+                name: Alert
+
+          - type: history-graph
+            title: Last 6 hours
+            hours_to_show: 6
+            entities:
+              - sensor.smokey_channel_3
+              - sensor.smokey_setpoint
+              - sensor.smokey_drive_output
+
+          # End-of-cook button. Calls fireboard.end_session, which DELETEs
+          # the active session via the Fireboard API.
+          - type: button
+            name: End cook session
+            icon: mdi:stop-circle
+            tap_action:
+              action: call-service
+              service: fireboard.end_session
+              service_data:
+                device_id: REPLACE_WITH_HA_DEVICE_ID
+              confirmation:
+                text: End the active Fireboard cook session?
+
+# --- Bonus: an automation snippet you can drop into automations.yaml ----
+#
+# automation:
+#   - alias: "Smoker pit temp out of range"
+#     trigger:
+#       - platform: state
+#         entity_id: binary_sensor.smokey_channel_3_alert
+#         to: "on"
+#     action:
+#       - service: notify.mobile_app_<your_phone>
+#         data:
+#           title: "Smoker alert!"
+#           message: >
+#             Pit temp is {{ states('sensor.smokey_channel_3') }}°F
+#             — outside your alert window.

@@ -1,0 +1,23 @@
+end_session:
+  name: End cook session
+  description: >
+    Stop the active Fireboard cook session. Pass either device_id (preferred)
+    to end whichever session that device is currently running, or session_id
+    to target a specific session by its Fireboard id.
+  fields:
+    device_id:
+      name: Device
+      description: A Fireboard device — its currently active session will be ended.
+      required: false
+      selector:
+        device:
+          integration: fireboard
+    session_id:
+      name: Session ID
+      description: Numeric Fireboard session id (advanced — use device_id if you can).
+      required: false
+      example: 11088452
+      selector:
+        number:
+          mode: box
+          min: 1
