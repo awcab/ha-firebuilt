@@ -735,11 +735,18 @@ class FireboardCard extends HTMLElement {
   }
 
   _renderGroup(g) {
+    // Drop probes whose current value is missing — keeps the grid focused
+    // on the channels that actually have a reading right now. The chart
+    // still uses g.channels directly, so historical lines aren't lost.
+    const liveChannels = g.channels.filter((c) => Number.isFinite(c.value));
+    const pitHasValue =
+      g.controlChannel && Number.isFinite(g.controlChannel.value);
+
     // Compact mode keeps the pit channel inline with the other probes
     // (since the drive panel is hidden). Expanded mode promotes it to the
     // 3-column control panel below.
     let probeChannels;
-    if (this._compact && g.controlChannel) {
+    if (this._compact && pitHasValue) {
       const sp =
         g.setpoint && g.setpoint.state !== "unavailable"
           ? Number(g.setpoint.state)
@@ -760,19 +767,18 @@ class FireboardCard extends HTMLElement {
         _setpointUnit: spUnit,
         _drivePct: Number.isFinite(drivePctVal) ? drivePctVal : null,
       };
-      probeChannels = [pit, ...g.channels];
+      probeChannels = [pit, ...liveChannels];
     } else {
-      probeChannels = g.channels;
+      probeChannels = liveChannels;
     }
     let channels;
     if (probeChannels.length > 0) {
       channels = `<div class="grid">${probeChannels
         .map((c) => this._renderChannel(c))
         .join("")}</div>`;
-    } else if (g.controlChannel) {
-      // The pit/control channel is being shown above; don't render an
-      // empty "No probes connected" placeholder where additional probes
-      // would go.
+    } else if (pitHasValue) {
+      // The pit/control channel is being shown in the drive panel above;
+      // no need for a "No probes connected" placeholder.
       channels = "";
     } else {
       channels = `<div class="empty">No probes connected</div>`;
@@ -815,7 +821,7 @@ class FireboardCard extends HTMLElement {
     if (
       (g.setpoint && g.setpoint.state !== "unavailable") ||
       (g.drivePct && g.drivePct.state !== "unavailable") ||
-      g.controlChannel
+      pitHasValue
     ) {
       const setVal =
         g.setpoint && g.setpoint.state !== "unavailable"
@@ -826,9 +832,11 @@ class FireboardCard extends HTMLElement {
       const drivePctVal = g.drivePct && g.drivePct.state !== "unavailable" ? Number(g.drivePct.state) : null;
       const driveDisplay = drivePctVal === null ? "—" : `${drivePctVal.toFixed(0)}%`;
 
-      // Optional pit/ambient column when we have a tied control channel.
+      // Optional pit/ambient column when we have a tied control channel
+      // AND it's currently reporting — otherwise we'd render a useless
+      // "—" tile that the user just asked us to hide.
       let pitCol = "";
-      if (g.controlChannel) {
+      if (pitHasValue) {
         const c = g.controlChannel;
         const pitColor = c.alertOn
           ? "var(--error-color, #db4437)"
@@ -858,7 +866,7 @@ class FireboardCard extends HTMLElement {
       }
 
       drive = `
-        <div class="drive ${g.controlChannel ? "with-pit" : ""}">
+        <div class="drive ${pitHasValue ? "with-pit" : ""}">
           ${pitCol}
           <div class="drive-card" data-entity="${
             g.setpoint ? g.setpoint.entity_id : ""
