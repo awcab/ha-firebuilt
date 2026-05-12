@@ -8,6 +8,6 @@
   "integration_type": "hub",
   "iot_class": "cloud_polling",
   "issue_tracker": "https://github.com/awcab/ha-firebuilt/issues",
-  "requirements": []
+  "requirements": [],
   "version": "1.2"
 }
