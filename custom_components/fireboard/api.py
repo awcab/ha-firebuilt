@@ -7,7 +7,7 @@ from typing import Any
 
 import aiohttp
 
-from .const import AUTH_URL, DEVICES_URL, SESSIONS_URL, USER_AGENT
+from .const import API_BASE, AUTH_URL, DEVICES_URL, SESSIONS_URL, USER_AGENT
 
 _LOGGER = logging.getLogger(__name__)
 
